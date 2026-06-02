@@ -19,18 +19,13 @@ export class MovimentosManuaisComponent {
   produtosCosif = [] as ProdutoCosifModel[];
   
   form = this.fb.group({
-    mes: [''],
-    ano: [''],
-    produto: [''],
-    cosif: [''],
-    valor: [''],
-    descricao: ['']
+    mes: [{ value: '', disabled: true }],
+    ano: [{ value: '', disabled: true }],
+    produto: [{ value: '', disabled: true }],
+    cosif: [{ value: '', disabled: true }],
+    valor: [{ value: '', disabled: true }],
+    descricao: [{ value: '', disabled: true }]
   });
-
-  cosifs = [
-    { id: '3001', name: 'Cosif 3001' },
-    { id: '3002', name: 'Cosif 3002' }
-  ];
 
   movimentos: MovimentoModel[] = [
     {
@@ -71,9 +66,7 @@ export class MovimentosManuaisComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder, private movimentoService: MovimentosManuaisService) {
-    this.form.disable();
-  }
+  constructor(private fb: FormBuilder, private movimentoService: MovimentosManuaisService) {}
 
   ngOnInit(): void {
     this.movimentoService.listarProdutos().subscribe((response) => {
