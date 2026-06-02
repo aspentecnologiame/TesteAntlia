@@ -1,0 +1,138 @@
+.movimentos-page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #222;
+}
+
+.movimentos-page h1 {
+  font-size: 2rem;
+  margin-bottom: 20px;
+}
+
+.movimento-card,
+.movimento-list {
+  border: 1px solid #b0b0b0;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+}
+
+.movimento-card-header,
+.list-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid #d8d8d8;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.movimento-form {
+  padding: 20px;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.single-row {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.field-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.field-group label {
+  font-size: 0.95rem;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.field-group input,
+.field-group select,
+.field-group textarea {
+  border: 1px solid #9e9e9e;
+  border-radius: 4px;
+  padding: 10px 12px;
+  font-size: 0.95rem;
+  color: #222;
+  background: #fff;
+}
+
+.field-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding-top: 8px;
+}
+
+.form-actions button {
+  min-width: 96px;
+  padding: 10px 16px;
+  border: 1px solid #222;
+  background: #f3f3f3;
+  color: #222;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.form-actions button.secondary {
+  background: #fff;
+}
+
+.form-actions button:hover {
+  background: #e6e6e6;
+}
+
+.table-scroll {
+  overflow-x: auto;
+  padding: 16px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 900px;
+}
+
+th,
+td {
+  border: 1px solid #d2d2d2;
+  padding: 12px 10px;
+  text-align: left;
+}
+
+th {
+  background: #f3f3f3;
+  font-weight: 600;
+}
+
+tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+@media (max-width: 840px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

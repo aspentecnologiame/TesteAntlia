@@ -1,0 +1,90 @@
+<div class="row">
+  <h1>Movimentos Manuais</h1>
+
+  <section class="movimento-card">
+    <div class="movimento-card-header">
+      <span>Movimento</span>
+    </div>
+
+    <form [formGroup]="form" class="movimento-form" (ngSubmit)="incluir()">
+      <div class="form-grid">
+        <div class="field-group">
+          <label>Mês</label>
+          <input type="text" formControlName="mes" placeholder="Mês" />
+        </div>
+        <div class="field-group">
+          <label>Ano</label>
+          <input type="text" formControlName="ano" placeholder="Ano" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field-group">
+          <label>Produto</label>
+          <select formControlName="produto">
+            <option value="">Selecione</option>
+            <option *ngFor="let item of produtos" [value]="item.name">{{ item.name }}</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Cosif</label>
+          <select formControlName="cosif">
+            <option value="">Selecione</option>
+            <option *ngFor="let item of cosifs" [value]="item.id">{{ item.id }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-grid single-row">
+        <div class="field-group full-width">
+          <label>Valor</label>
+          <input type="text" formControlName="valor" placeholder="Valor" />
+        </div>
+      </div>
+
+      <div class="field-group full-width textarea-group">
+        <label>Descrição</label>
+        <textarea formControlName="descricao" rows="6" placeholder="Descrição"></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button type="button" class="secondary" (click)="limpar()">Limpar</button>
+        <button type="button" class="secondary" (click)="novo()">Novo</button>
+        <button type="submit">Incluir</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="movimento-list">
+    <div class="list-header">
+      <span>Lista</span>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>Ano</th>
+            <th>Código do Produto</th>
+            <th>Descrição do Produto</th>
+            <th>NR Lançamento</th>
+            <th>Descrição</th>
+            <th>Valor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let item of movimentos">
+            <td>{{ item.mes }}</td>
+            <td>{{ item.ano }}</td>
+            <td>{{ item.produtoCodigo }}</td>
+            <td>{{ item.produtoDescricao }}</td>
+            <td>{{ item.lancamento }}</td>
+            <td>{{ item.descricao }}</td>
+            <td>{{ item.valor }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
