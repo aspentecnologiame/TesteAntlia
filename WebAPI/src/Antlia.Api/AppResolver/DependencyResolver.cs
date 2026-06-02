@@ -32,6 +32,16 @@ namespace Antlia.Api.AppResolver
                 options.SubstituteApiVersionInUrl = true;
             });
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
+
             var mappingConfig = new MapperConfiguration(mc => mc.AddProfile(new MappingProfile()), NullLoggerFactory.Instance);
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);

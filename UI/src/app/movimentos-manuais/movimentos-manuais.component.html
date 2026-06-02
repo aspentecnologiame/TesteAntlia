@@ -21,16 +21,16 @@
       <div class="form-grid">
         <div class="field-group">
           <label>Produto</label>
-          <select formControlName="produto">
+          <select formControlName="produto" (click)="onProdutoClick()">
             <option value="">Selecione</option>
-            <option *ngFor="let item of produtos" [value]="item.name">{{ item.name }}</option>
+            <option *ngFor="let item of produtos" [value]="item.codigo">{{ item.descricao }}</option>
           </select>
         </div>
         <div class="field-group">
           <label>Cosif</label>
           <select formControlName="cosif">
             <option value="">Selecione</option>
-            <option *ngFor="let item of cosifs" [value]="item.id">{{ item.id }}</option>
+            <option *ngFor="let item of produtosCosif" [value]="item.codigoCosif">{{ item.codigoCosif }}</option>
           </select>
         </div>
       </div>

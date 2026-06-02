@@ -1,9 +1,12 @@
-﻿
+﻿using System.ComponentModel;
+
 namespace Antlia.Domain.Enums
 {
     public enum StatusEnum
     {
-        Ativo = 'A',
-        Inativo = 'I'
+        [Description("Ativo")]
+        A,
+        [Description("Inativo")]    
+        I
     }
 }

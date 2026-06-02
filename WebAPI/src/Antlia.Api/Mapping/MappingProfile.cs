@@ -15,11 +15,14 @@ namespace Antlia.Api.Mapping
         private void CreateMappingRequest()
         {
             CreateMap<MovimentoDTO, MovimentoEntity>();
+            CreateMap<ProdutoDTO, ProdutoEntity>();
         }
 
         private void CreateMappingResponse()
         {
             CreateMap<MovimentoEntity, MovimentoDTO>();
+            CreateMap<ProdutoEntity, ProdutoDTO>();
+            CreateMap<ProdutoCosifEntity, ProdutoCosifDTO>();
         }
     }
 }

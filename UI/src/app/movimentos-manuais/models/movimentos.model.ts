@@ -1,4 +1,4 @@
-export interface Movimento {
+export interface MovimentoModel {
   mes: string;
   ano: string;
   produtoCodigo: string;

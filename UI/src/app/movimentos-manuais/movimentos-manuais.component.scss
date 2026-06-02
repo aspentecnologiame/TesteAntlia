@@ -64,6 +64,15 @@
   background: #fff;
 }
 
+.field-group input:disabled,
+.field-group select:disabled,
+.field-group textarea:disabled {
+  background: #e8e8e8;
+  color: #888;
+  border-color: #c0c0c0;
+  cursor: not-allowed;
+}
+
 .field-group textarea {
   resize: vertical;
   min-height: 120px;

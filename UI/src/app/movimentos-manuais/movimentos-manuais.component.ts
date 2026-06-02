@@ -1,8 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { Movimento } from './models/Movimento';
-
+import { MovimentoModel } from './models/movimentos.model';
+import { MovimentosManuaisService } from './movimentos-manuais.service';
+import { ProdutoModel } from './models/produto.model';
+import { ProdutoCosifModel } from './models/produto-cosif.model';
 
 @Component({
   selector: 'app-movimentos-manuais',
@@ -12,6 +14,10 @@ import { Movimento } from './models/Movimento';
   styleUrls: ['./movimentos-manuais.component.scss']
 })
 export class MovimentosManuaisComponent {
+  
+  produtos = [] as ProdutoModel[];
+  produtosCosif = [] as ProdutoCosifModel[];
+  
   form = this.fb.group({
     mes: [''],
     ano: [''],
@@ -21,17 +27,12 @@ export class MovimentosManuaisComponent {
     descricao: ['']
   });
 
-  produtos = [
-    { id: '1', name: 'Produto Teste' },
-    { id: '2', name: 'Produto Teste 2' }
-  ];
-
   cosifs = [
     { id: '3001', name: 'Cosif 3001' },
     { id: '3002', name: 'Cosif 3002' }
   ];
 
-  movimentos: Movimento[] = [
+  movimentos: MovimentoModel[] = [
     {
       mes: '2',
       ano: '2012',
@@ -70,13 +71,27 @@ export class MovimentosManuaisComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private movimentoService: MovimentosManuaisService) {
+    this.form.disable();
+  }
+
+  ngOnInit(): void {
+    this.movimentoService.listarProdutos().subscribe((response) => {
+      this.produtos = response.data.map((item) => ({
+        codigo: item.codigo,
+        descricao: item.descricao,
+        status: item.status
+      }));
+      console.log('Produtos carregados:', this.produtos);
+    });
+  }
 
   limpar(): void {
     this.form.reset();
   }
 
   novo(): void {
+    this.form.enable();
     this.form.reset();
     this.form.patchValue({
       mes: '',
@@ -88,9 +103,25 @@ export class MovimentosManuaisComponent {
     });
   }
 
+  onProdutoClick(): void {
+    const produtoSelecionado = this.form.get('produto')?.value || undefined;
+    if (produtoSelecionado) {
+      this.movimentoService.listarProdutosCosif(produtoSelecionado).subscribe((response) => {
+      this.produtosCosif = response.data.map((item) => ({
+        codigoProduto: item.codigoProduto,
+        codigoCosif: item.codigoCosif,
+        codigoClassificacao: item.codigoClassificacao,
+        status: item.status
+      }));
+      console.log('Produtos Cosif carregados:', this.produtosCosif);
+    });
+    }
+    
+  }
+
   incluir(): void {
     const value = this.form.value;
-    const produto = this.produtos.find((item) => item.name === value.produto);
+    const produto = this.produtos.find((item) => item.codigo === value.produto);
     const descricao = value.descricao?.trim() || 'Movimento novo';
     const valor = value.valor ? this.formatValor(value.valor) : 'R$ 0,00';
 
@@ -99,8 +130,8 @@ export class MovimentosManuaisComponent {
       {
         mes: value.mes || '',
         ano: value.ano || '',
-        produtoCodigo: produto?.id || '',
-        produtoDescricao: value.produto || '',
+        produtoCodigo: produto?.codigo || '',
+        produtoDescricao: produto?.descricao || '',
         lancamento: this.movimentos.length + 1,
         descricao,
         valor
