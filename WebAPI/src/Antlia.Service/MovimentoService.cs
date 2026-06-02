@@ -1,14 +1,16 @@
 ﻿using Antlia.Domain.Entities;
+using Antlia.Domain.Interfaces.Repositories;
 using Antlia.Domain.Interfaces.Services;
 
 namespace Antlia.Service
 {
-    public class MovimentoService : IMovimentoService
+    public class MovimentoService(IMovimentoRepository movimentoRepository) : IMovimentoService
     {
-        public async Task<bool> Add(ProdutoEntity produtoEntity)
+        private readonly IMovimentoRepository _movimentoRepository = movimentoRepository;
+
+        public async Task<bool> Add(MovimentoEntity produtoEntity)
         {
-            // Lógica para adicionar um produto
-            return await Task.FromResult(true);
+            return await _movimentoRepository.Add(produtoEntity);
         }
     }
 }

@@ -10,16 +10,16 @@ namespace Antlia.Api.Endpoints
     {
         public void MapEndpoint(IApplicationBuilder builder, IEndpointRouteBuilder app)
         {
-            const string route = "produto";
+            const string route = "movimento";
 
-            app.MapPost($"/{route}", async (ProdutoDTO produto, IMovimentoService _produtoService, IMapper _mapper) =>
+            app.MapPost($"/{route}", async (MovimentoDTO movimento, IMovimentoService _movimentoService, IMapper _mapper) =>
             {
                 try
                 {
-                    var produtoEntity = _mapper.Map<ProdutoEntity>(produto);
-                    var result = await _produtoService.Add(produtoEntity);
+                    var movimentoEntity = _mapper.Map<MovimentoEntity>(movimento);
+                    var result = await _movimentoService.Add(movimentoEntity);
                     // Lógica para criar um novo produto
-                    return await Task.FromResult(Results.Created($"/{route}/{produto.Codigo}", produto));
+                    return await Task.FromResult(Results.Created($"/{route}/{movimento.CodigoProduto}", movimento));
                 }
                 catch (Exception ex)
                 {

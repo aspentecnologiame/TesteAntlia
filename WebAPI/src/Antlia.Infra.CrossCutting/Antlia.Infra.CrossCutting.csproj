@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Antlia.Infra.Data.SQLServer\Antlia.Infra.Data.SQLServer.csproj" />
     <ProjectReference Include="..\Antlia.Service\Antlia.Service.csproj" />
   </ItemGroup>
 

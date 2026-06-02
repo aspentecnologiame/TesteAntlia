@@ -5,6 +5,6 @@ namespace Antlia.Domain.Interfaces.Services
 {
     public interface IMovimentoService : IService
     {
-        Task<bool> Add(ProdutoEntity produtoEntity);
+        Task<bool> Add(MovimentoEntity produtoEntity);
     }
 }
