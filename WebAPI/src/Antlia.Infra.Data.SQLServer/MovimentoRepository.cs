@@ -40,13 +40,13 @@ namespace Antlia.Infra.Data.SQLServer
             return movimentos;
         }
 
-        public async Task<int> ConsultaUltimoMovimento(int Ano, int Mes)
+        public async Task<int?> ConsultaUltimoMovimento(int Ano, int Mes)
         {
             using var connection = await DatabaseConnection();
 
             var parameters = new { DAT_ANO = Ano, DAT_MES = Mes };
 
-            var movimento = await connection.QueryFirstAsync<int>("usp_ConsultaUltimoMovimento", parameters, commandType: CommandType.StoredProcedure);
+            var movimento = await connection.QueryFirstOrDefaultAsync<int?>("usp_ConsultaUltimoMovimento", parameters, commandType: CommandType.StoredProcedure);
 
             return movimento;
         }

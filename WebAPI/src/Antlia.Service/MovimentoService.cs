@@ -11,9 +11,12 @@ namespace Antlia.Service
 
         public async Task<bool> Add(MovimentoEntity movimentoEntity)
         {
+            var ultimoMovimento = await _movimentoRepository.ConsultaUltimoMovimento(movimentoEntity.Ano, movimentoEntity.Mes);
+            var lancamento = ultimoMovimento ?? default;
+
             movimentoEntity.CodigoUsuario = _codigoUsuario;
             movimentoEntity.DataMovimento = DateTime.Now;
-            movimentoEntity.Lancamento = await _movimentoRepository.ConsultaUltimoMovimento(movimentoEntity.Ano, movimentoEntity.Mes) + 1;
+            movimentoEntity.Lancamento =  lancamento + 1;
             return await _movimentoRepository.Add(movimentoEntity);
         }
 

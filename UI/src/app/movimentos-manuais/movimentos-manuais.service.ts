@@ -7,6 +7,7 @@ import { BaseResponseModel } from './models/response/base.response.model';
 import { ProdutoModel } from './models/produto.model';
 import { ProdutoCosifModel } from './models/produto-cosif.model';
 import { MovimentoManualModel } from './models/movimento-manual.model';
+import { MovimentoModel } from './models/movimentos.model';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,15 @@ export class MovimentosManuaisService {
   listarProdutosCosif(codigoProduto: string): Observable<BaseResponseModel<ProdutoCosifModel[]>>
   {
       return this._httpClient.get<BaseResponseModel<ProdutoCosifModel[]>>(`${environment.urlApi}${environment.apiVersion}${this.URLS.baseProdutoCosif}${codigoProduto}`).pipe(
+          tap((navigation) => {
+              this._navigation.next(navigation);
+          })
+      );
+  }
+
+  listarMovimentos(): Observable<BaseResponseModel<MovimentoModel[]>>
+  {
+      return this._httpClient.get<BaseResponseModel<MovimentoModel[]>>(`${environment.urlApi}${environment.apiVersion}${this.URLS.baseMovimento}`).pipe(
           tap((navigation) => {
               this._navigation.next(navigation);
           })

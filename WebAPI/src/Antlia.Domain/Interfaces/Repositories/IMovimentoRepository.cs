@@ -7,6 +7,6 @@ namespace Antlia.Domain.Interfaces.Repositories
     {
         Task<bool> Add(MovimentoEntity produtoEntity);
         Task<IEnumerable<MovimentosManuaisEntity>> ListarMovimentos();
-        Task<int> ConsultaUltimoMovimento(int Ano, int Mes);
+        Task<int?> ConsultaUltimoMovimento(int Ano, int Mes);
     }
 }

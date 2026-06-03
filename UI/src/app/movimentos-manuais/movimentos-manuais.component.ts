@@ -6,6 +6,7 @@ import { MovimentoManualModel } from './models/movimento-manual.model';
 import { MovimentosManuaisService } from './movimentos-manuais.service';
 import { ProdutoModel } from './models/produto.model';
 import { ProdutoCosifModel } from './models/produto-cosif.model';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 @Component({
   selector: 'app-movimentos-manuais',
@@ -19,7 +20,11 @@ export class MovimentosManuaisComponent {
   
   produtos = [] as ProdutoModel[];
   produtosCosif = [] as ProdutoCosifModel[];
+
   movimentoManual = {} as MovimentoManualModel;
+  private movimentosSubject = new BehaviorSubject<MovimentoModel[]>([]);
+  movimentos$: Observable<MovimentoModel[]> = this.movimentosSubject.asObservable();
+  movimentos: MovimentoModel[] = [];
   
   form = this.fb.group({
     mes: [{ value: '', disabled: true }],
@@ -30,45 +35,6 @@ export class MovimentosManuaisComponent {
     descricao: [{ value: '', disabled: true }]
   });
 
-  movimentos: MovimentoModel[] = [
-    {
-      mes: '2',
-      ano: '2012',
-      produtoCodigo: '1',
-      produtoDescricao: 'Produto Teste',
-      lancamento: 1,
-      descricao: 'Teste Movimentos',
-      valor: 'R$ 500,00'
-    },
-    {
-      mes: '2',
-      ano: '2012',
-      produtoCodigo: '2',
-      produtoDescricao: 'Produto Teste 2',
-      lancamento: 2,
-      descricao: 'Teste Movimentos 2',
-      valor: 'R$ 10,00'
-    },
-    {
-      mes: '2',
-      ano: '2012',
-      produtoCodigo: '1',
-      produtoDescricao: 'Produto Teste',
-      lancamento: 3,
-      descricao: 'Teste Movimentos 2',
-      valor: 'R$ 12,00'
-    },
-    {
-      mes: '2',
-      ano: '2012',
-      produtoCodigo: '1',
-      produtoDescricao: 'Produto Teste',
-      lancamento: 4,
-      descricao: 'Teste Movimentos 4',
-      valor: 'R$ 100,00'
-    }
-  ];
-
   constructor(
     private fb: FormBuilder,
     private movimentoService: MovimentosManuaisService,
@@ -76,6 +42,7 @@ export class MovimentosManuaisComponent {
   ) {}
 
   ngOnInit(): void {
+
     this.movimentoService.listarProdutos().subscribe((response) => {
       this.produtos = response.data.map((item) => ({
         codigo: item.codigo,
@@ -84,6 +51,25 @@ export class MovimentosManuaisComponent {
       }));
       console.log('Produtos carregados:', this.produtos);
     });
+
+    this.movimentoService.listarMovimentos()
+      .pipe(
+        map((response) => response.data.map((item, index) => ({
+          ano: item.ano,
+          mes: item.mes,
+          codigoProduto: item.codigoProduto,
+          descricaoProduto: item.descricaoProduto,
+          lancamento: item.lancamento,
+          descricaoMovimento: item.descricaoMovimento,
+          valor: this.currencyPipe.transform(item.valor, 'BRL', 'symbol', '1.2-2') || ''
+        } as MovimentoModel)))
+      )
+      .subscribe((mapped) => {
+        this.movimentos = mapped;
+        this.movimentosSubject.next(mapped);
+        console.log('Movimentos carregados:', mapped);
+      });
+
   }
 
   limpar(): void {
@@ -92,6 +78,7 @@ export class MovimentosManuaisComponent {
 
   novo(): void {
     this.form.enable();
+    this.form.controls['cosif'].disable();
     this.form.reset();
     this.form.patchValue({
       mes: '',
@@ -105,8 +92,16 @@ export class MovimentosManuaisComponent {
 
   onMesInput(event: Event): void {
     const input = event.target as HTMLInputElement;
-    input.value = input.value.replace(/\D/g, '').slice(0, 2);
-    this.form.get('mes')?.setValue(input.value, { emitEvent: false });
+    let cleaned = input.value.replace(/\D/g, '').slice(0, 2);
+    
+    // Valida se o mês é maior que 12
+    const mesValue = Number(cleaned);
+    if (mesValue > 12) {
+      cleaned = '12';
+    }
+    
+    input.value = cleaned;
+    this.form.get('mes')?.setValue(cleaned, { emitEvent: false });
   }
 
   onAnoInput(event: Event): void {
@@ -147,6 +142,7 @@ export class MovimentosManuaisComponent {
         codigoClassificacao: item.codigoClassificacao,
         status: item.status
       }));
+      this.form.controls['cosif'].enable();
       console.log('Produtos Cosif carregados:', this.produtosCosif);
     });
     }
@@ -159,6 +155,7 @@ export class MovimentosManuaisComponent {
     const produto = this.produtos.find((item) => item.codigo === value.produto);
     const descricao = value.descricao?.trim() || 'Movimento novo';
     const valor = value.valor ? this.formatValor(value.valor) : this.formatValor('R$ 0,00');
+    let skip = false;
 
     this.movimentoManual = {
       mes: value.mes || '',
@@ -169,26 +166,44 @@ export class MovimentosManuaisComponent {
       valor
     };
 
+    Object.entries(this.movimentoManual).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === '') {
+        skip = true;
+      }
+    });
+    
+    if (skip) {
+      console.log('Por favor, preencha todos os campos obrigatórios.');
+      return;
+    }
+
     const teste = this.movimentoService.save(this.movimentoManual).subscribe({
             next: (response) => {
-                console.log('Movimento salvo com sucesso:', response.data);
-                this.movimentos = [
-                ...this.movimentos,
-                {
-                  mes: value.mes || '',
-                  ano: value.ano || '',
-                  produtoCodigo: produto?.codigo || '',
-                  produtoDescricao: produto?.descricao || '',
-                  lancamento: this.movimentos.length + 1,
-                  descricao,
-                  valor: valor.toString()
-                }
-              ];
 
+              this.movimentoService.listarMovimentos()
+              .pipe(
+                map((response) => response.data.map((item, index) => ({
+                  ano: item.ano,
+                  mes: item.mes,
+                  codigoProduto: item.codigoProduto,
+                  descricaoProduto: item.descricaoProduto,
+                  lancamento: item.lancamento,
+                  descricaoMovimento: item.descricaoMovimento,
+                  valor: this.currencyPipe.transform(item.valor, 'BRL', 'symbol', '1.2-2') || ''
+                } as MovimentoModel)))
+              )
+              .subscribe((mapped) => {
+                this.movimentos = mapped;
+                this.movimentosSubject.next(mapped);
+                console.log('Movimentos carregados:', mapped);
+              });
+
+              console.log('Movimento salvo com sucesso:', response.data);
               this.form.reset();
+              this.form.disable();
             },
             error: (err) => {
-                console.log(err);
+              console.log(err);
             }
     });
 

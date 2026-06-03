@@ -97,13 +97,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let item of movimentos">
+          <tr *ngFor="let item of movimentos$ | async">
             <td>{{ item.mes }}</td>
             <td>{{ item.ano }}</td>
-            <td>{{ item.produtoCodigo }}</td>
-            <td>{{ item.produtoDescricao }}</td>
+            <td>{{ item.codigoProduto }}</td>
+            <td>{{ item.descricaoProduto }}</td>
             <td>{{ item.lancamento }}</td>
-            <td>{{ item.descricao }}</td>
+            <td>{{ item.descricaoMovimento }}</td>
             <td>{{ item.valor }}</td>
           </tr>
         </tbody>

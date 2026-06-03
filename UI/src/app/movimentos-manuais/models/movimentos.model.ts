@@ -1,9 +1,9 @@
 export interface MovimentoModel {
   mes: string;
   ano: string;
-  produtoCodigo: string;
-  produtoDescricao: string;
+  codigoProduto: string;
+  descricaoProduto: string;
   lancamento: number;
-  descricao: string;
+  descricaoMovimento: string;
   valor: string;
 }
