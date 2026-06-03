@@ -15,7 +15,7 @@ namespace Antlia.Api.Endpoints
         {
             app.MapGet("/produto", async (IProdutoService _produtoService, IMapper _mapper) =>
             {
-                var produtosEntity = await _produtoService.ConsultaProdutos();
+                var produtosEntity = await _produtoService.ListaProdutos();
                 var produtosDTO = _mapper.Map<IEnumerable<ProdutoDTO>>(produtosEntity);
 
                 return Results.Ok(new BaseResponse<IEnumerable<ProdutoDTO>>(produtosDTO));

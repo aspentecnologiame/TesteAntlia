@@ -5,6 +5,6 @@ namespace Antlia.Domain.Interfaces.Services
 {
     public interface IProdutoService : IService
     {
-        Task<IEnumerable<ProdutoEntity>> ConsultaProdutos();
+        Task<IEnumerable<ProdutoEntity>> ListaProdutos();
     }
 }

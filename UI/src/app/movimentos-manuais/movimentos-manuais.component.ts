@@ -19,7 +19,7 @@ export class MovimentosManuaisComponent {
   
   produtos = [] as ProdutoModel[];
   produtosCosif = [] as ProdutoCosifModel[];
-  movimentoManual = [] as MovimentoManualModel[];
+  movimentoManual = {} as MovimentoManualModel;
   
   form = this.fb.group({
     mes: [{ value: '', disabled: true }],
@@ -154,33 +154,53 @@ export class MovimentosManuaisComponent {
   }
 
   incluir(): void {
+
     debugger;
+   
     const value = this.form.value;
     const produto = this.produtos.find((item) => item.codigo === value.produto);
     const descricao = value.descricao?.trim() || 'Movimento novo';
-    const valor = value.valor ? this.formatValor(value.valor) : 'R$ 0,00';
+    const valor = value.valor ? this.formatValor(value.valor) : this.formatValor('R$ 0,00');
 
-    this.movimentos = [
-      ...this.movimentos,
-      {
-        mes: value.mes || '',
-        ano: value.ano || '',
-        produtoCodigo: produto?.codigo || '',
-        produtoDescricao: produto?.descricao || '',
-        lancamento: this.movimentos.length + 1,
-        descricao,
-        valor
-      }
-    ];
+    this.movimentoManual = {
+      mes: value.mes || '',
+      ano: value.ano || '',
+      codigoProduto: produto?.codigo || '',
+      codigoCosif: value.cosif || '',
+      descricao,
+      valor
+    };
 
-    this.form.reset();
+    const teste = this.movimentoService.save(this.movimentoManual).subscribe({
+            next: (response) => {
+                console.log('Movimento salvo com sucesso:', response.data);
+                this.movimentos = [
+                ...this.movimentos,
+                {
+                  mes: value.mes || '',
+                  ano: value.ano || '',
+                  produtoCodigo: produto?.codigo || '',
+                  produtoDescricao: produto?.descricao || '',
+                  lancamento: this.movimentos.length + 1,
+                  descricao,
+                  valor: valor.toString()
+                }
+              ];
+
+              this.form.reset();
+            },
+            error: (err) => {
+                console.log(err);
+            }
+    });
+
   }
 
-  private formatValor(value: string): string {
-    const numeric = Number(value.toString().replace(',', '.').replace(/[^[0-9].]/g, ''));
+  private formatValor(value: string): number {
+    const numeric = Number(value.replace(/[^\d,\.-]/g, '').replace(',', '.'));
     if (Number.isNaN(numeric)) {
-      return 'R$ 0,00';
+      return 0;
     }
-    return `R$ ${numeric.toFixed(2).replace('.', ',')}`;
+    return numeric;
   }
 }

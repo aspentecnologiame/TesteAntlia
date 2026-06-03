@@ -9,21 +9,21 @@ namespace Antlia.Infra.Data.SQLServer
 {
     public class MovimentoRepository(IConfiguration configuration) : BaseRepository(configuration), IMovimentoRepository
     {
-        public async Task<bool> Add(MovimentoEntity produtoEntity)
+        public async Task<bool> Add(MovimentoEntity movimentoEntity)
         {
             using var connection = await DatabaseConnection();
 
             var parameters = new 
             { 
-                DAT_MES = produtoEntity.Mes,
-                DAT_ANO = produtoEntity.Ano,
-                NUM_LANCAMENTO = produtoEntity.Lancamento,
-                COD_PRODUTO = produtoEntity.CodigoProduto,
-                COD_COSIF = produtoEntity.CodigoCosif,
-                DES_DESCRICAO = produtoEntity.Descricao,
-                DAT_MOVIMENTO = produtoEntity.DataMovimento,
-                COD_USUARIO = produtoEntity.CodigoUsuario,
-                VAL_VALOR = produtoEntity.Valor
+                DAT_MES = movimentoEntity.Mes,
+                DAT_ANO = movimentoEntity.Ano,
+                NUM_LANCAMENTO = movimentoEntity.Lancamento,
+                COD_PRODUTO = movimentoEntity.CodigoProduto,
+                COD_COSIF = movimentoEntity.CodigoCosif,
+                DES_DESCRICAO = movimentoEntity.Descricao,
+                DAT_MOVIMENTO = movimentoEntity.DataMovimento,
+                COD_USUARIO = movimentoEntity.CodigoUsuario,
+                VAL_VALOR = movimentoEntity.Valor
             };
 
             var inserted = await connection.ExecuteScalarAsync<int>("usp_InserirMovimento", parameters, commandType: CommandType.StoredProcedure);

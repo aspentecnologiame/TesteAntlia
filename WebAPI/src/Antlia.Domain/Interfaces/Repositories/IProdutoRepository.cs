@@ -5,6 +5,6 @@ namespace Antlia.Domain.Interfaces.Repositories
 {
     public interface IProdutoRepository : IRepository
     {
-        Task<IEnumerable<ProdutoEntity>> ConsultaProdutos();
+        Task<IEnumerable<ProdutoEntity>> ListaProdutos();
     }
 }

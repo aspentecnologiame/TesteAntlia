@@ -9,11 +9,11 @@ namespace Antlia.Infra.Data.SQLServer
 {
     public class ProdutoRepository(IConfiguration configuration) : BaseRepository(configuration), IProdutoRepository
     {
-        public async Task<IEnumerable<ProdutoEntity>> ConsultaProdutos()
+        public async Task<IEnumerable<ProdutoEntity>> ListaProdutos()
         {
             using var connection = await DatabaseConnection();
 
-            var produtos = await connection.QueryAsync<ProdutoEntity>("usp_ConsultaProdutos", commandType: CommandType.StoredProcedure);
+            var produtos = await connection.QueryAsync<ProdutoEntity>("usp_ListaProdutos", commandType: CommandType.StoredProcedure);
 
             return produtos;
         }

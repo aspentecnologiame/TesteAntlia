@@ -44,7 +44,7 @@ export class MovimentosManuaisService {
 
   save(movimentoModel: MovimentoManualModel): Observable<BaseResponseModel<MovimentoManualModel>> {
     return this._httpClient.post<BaseResponseModel<MovimentoManualModel>>(
-      `${environment.urlApi}${this.URLS.baseMovimento}`,
+      `${environment.urlApi}${environment.apiVersion}${this.URLS.baseMovimento}`,
       this.baseRequest<MovimentoManualModel>(movimentoModel)
     );
   }

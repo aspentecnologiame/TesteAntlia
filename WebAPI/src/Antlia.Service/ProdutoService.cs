@@ -8,6 +8,6 @@ namespace Antlia.Service
     {
         private readonly IProdutoRepository _produtoRepository = produtoRepository;
 
-        public async Task<IEnumerable<ProdutoEntity>> ConsultaProdutos() => await _produtoRepository.ConsultaProdutos();
+        public async Task<IEnumerable<ProdutoEntity>> ListaProdutos() => await _produtoRepository.ListaProdutos();
     }
 }
