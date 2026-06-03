@@ -13,8 +13,10 @@ namespace Antlia.Service
         {
             movimentoEntity.CodigoUsuario = _codigoUsuario;
             movimentoEntity.DataMovimento = DateTime.Now;
-            movimentoEntity.Lancamento = 1;
+            movimentoEntity.Lancamento = await _movimentoRepository.ConsultaUltimoMovimento(movimentoEntity.Ano, movimentoEntity.Mes) + 1;
             return await _movimentoRepository.Add(movimentoEntity);
         }
+
+        public async Task<IEnumerable<MovimentosManuaisEntity>> ListarMovimentos() => await _movimentoRepository.ListarMovimentos();
     }
 }

@@ -23,6 +23,7 @@ namespace Antlia.Api.Mapping
             CreateMap<MovimentoEntity, MovimentoDTO>();
             CreateMap<ProdutoEntity, ProdutoDTO>();
             CreateMap<ProdutoCosifEntity, ProdutoCosifDTO>();
+            CreateMap<MovimentosManuaisEntity, MovimentosManuaisDTO>();
         }
     }
 }

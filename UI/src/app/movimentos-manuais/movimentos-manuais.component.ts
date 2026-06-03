@@ -155,8 +155,6 @@ export class MovimentosManuaisComponent {
 
   incluir(): void {
 
-    debugger;
-   
     const value = this.form.value;
     const produto = this.produtos.find((item) => item.codigo === value.produto);
     const descricao = value.descricao?.trim() || 'Movimento novo';

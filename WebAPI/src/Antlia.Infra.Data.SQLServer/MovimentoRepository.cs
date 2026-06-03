@@ -30,5 +30,25 @@ namespace Antlia.Infra.Data.SQLServer
 
             return inserted > 0;
         }
+
+        public async Task<IEnumerable<MovimentosManuaisEntity>> ListarMovimentos()
+        {
+            using var connection = await DatabaseConnection();
+
+            var movimentos = await connection.QueryAsync<MovimentosManuaisEntity>("usp_ListaMovimentos", commandType: CommandType.StoredProcedure);
+
+            return movimentos;
+        }
+
+        public async Task<int> ConsultaUltimoMovimento(int Ano, int Mes)
+        {
+            using var connection = await DatabaseConnection();
+
+            var parameters = new { DAT_ANO = Ano, DAT_MES = Mes };
+
+            var movimento = await connection.QueryFirstAsync<int>("usp_ConsultaUltimoMovimento", parameters, commandType: CommandType.StoredProcedure);
+
+            return movimento;
+        }
     }
 }
