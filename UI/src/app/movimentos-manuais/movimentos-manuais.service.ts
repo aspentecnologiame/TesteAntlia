@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpEventType } from '@angular/common/http';
-import { catchError, last, map, Observable, of, ReplaySubject, switchMap, tap, throwError } from 'rxjs';
+import { Observable, ReplaySubject, tap } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { BaseRequestModel } from './models/request/base.request.model';
 import { BaseResponseModel } from './models/response/base.response.model';
 import { ProdutoModel } from './models/produto.model';
 import { ProdutoCosifModel } from './models/produto-cosif.model';
+import { MovimentoManualModel } from './models/movimento-manual.model';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class MovimentosManuaisService {
 
   private readonly URLS = {
     baseProduto: "produto",
-    baseProdutoCosif: "produto-cosif/"
+    baseProdutoCosif: "produto-cosif/",
+    baseMovimento: "movimento"
   };
 
   constructor(private _httpClient: HttpClient) { }
@@ -38,6 +40,13 @@ export class MovimentosManuaisService {
               this._navigation.next(navigation);
           })
       );
+  }
+
+  save(movimentoModel: MovimentoManualModel): Observable<BaseResponseModel<MovimentoManualModel>> {
+    return this._httpClient.post<BaseResponseModel<MovimentoManualModel>>(
+      `${environment.urlApi}${this.URLS.baseMovimento}`,
+      this.baseRequest<MovimentoManualModel>(movimentoModel)
+    );
   }
 
   private baseRequest<T>(parameters: T): BaseRequestModel<T> {

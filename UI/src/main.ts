@@ -11,6 +11,7 @@ import { finalize } from 'rxjs';
 import { AppRoutingModule } from './app/app-routing.module';
 import { AppComponent } from './app/app.component';
 import { LoadingService } from './app/core/services/loading.service';
+import { appConfig } from './app/app.config';
 
 const loadingHttpInterceptor: HttpInterceptorFn = (req, next) => {
   const loadingService = inject(LoadingService);
@@ -26,6 +27,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     importProvidersFrom(BrowserModule, AppRoutingModule),
     provideAnimations(),
-    provideHttpClient(withInterceptors([loadingHttpInterceptor]))
+    provideHttpClient(withInterceptors([loadingHttpInterceptor])),
+    ...appConfig.providers
   ]
 }).catch((err) => console.error(err));

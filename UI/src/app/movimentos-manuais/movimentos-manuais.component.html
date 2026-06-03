@@ -10,11 +10,27 @@
       <div class="form-grid">
         <div class="field-group">
           <label>Mês</label>
-          <input type="text" formControlName="mes" placeholder="Mês" />
+          <input
+            type="text"
+            inputmode="numeric"
+            maxlength="2"
+            pattern="\d{1,2}"
+            formControlName="mes"
+            placeholder="Mês"
+            (input)="onMesInput($event)"
+          />
         </div>
         <div class="field-group">
           <label>Ano</label>
-          <input type="text" formControlName="ano" placeholder="Ano" />
+          <input
+            type="text"
+            inputmode="numeric"
+            maxlength="4"
+            pattern="\d{1,4}"
+            formControlName="ano"
+            placeholder="Ano"
+            (input)="onAnoInput($event)"
+          />
         </div>
       </div>
 
@@ -30,7 +46,7 @@
           <label>Cosif</label>
           <select formControlName="cosif">
             <option value="">Selecione</option>
-            <option *ngFor="let item of produtosCosif" [value]="item.codigoCosif">{{ item.codigoCosif }}</option>
+            <option *ngFor="let item of produtosCosif" [value]="item.codigoCosif">{{ item.codigoCosif }} - {{ item.codigoClassificacao }}</option>
           </select>
         </div>
       </div>
@@ -38,7 +54,14 @@
       <div class="form-grid single-row">
         <div class="field-group full-width">
           <label>Valor</label>
-          <input type="text" formControlName="valor" placeholder="Valor" />
+          <input
+            type="text"
+            inputmode="numeric"
+            formControlName="valor"
+            [value]="formatCurrencyValue(form.get('valor')?.value)"
+            (input)="onValorInput($event)"
+            placeholder="Valor"
+          />
         </div>
       </div>
 

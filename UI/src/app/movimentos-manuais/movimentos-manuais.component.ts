@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, CurrencyPipe } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MovimentoModel } from './models/movimentos.model';
+import { MovimentoManualModel } from './models/movimento-manual.model';
 import { MovimentosManuaisService } from './movimentos-manuais.service';
 import { ProdutoModel } from './models/produto.model';
 import { ProdutoCosifModel } from './models/produto-cosif.model';
@@ -10,6 +11,7 @@ import { ProdutoCosifModel } from './models/produto-cosif.model';
   selector: 'app-movimentos-manuais',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule],
+  providers: [CurrencyPipe],
   templateUrl: './movimentos-manuais.component.html',
   styleUrls: ['./movimentos-manuais.component.scss']
 })
@@ -17,6 +19,7 @@ export class MovimentosManuaisComponent {
   
   produtos = [] as ProdutoModel[];
   produtosCosif = [] as ProdutoCosifModel[];
+  movimentoManual = [] as MovimentoManualModel[];
   
   form = this.fb.group({
     mes: [{ value: '', disabled: true }],
@@ -66,7 +69,11 @@ export class MovimentosManuaisComponent {
     }
   ];
 
-  constructor(private fb: FormBuilder, private movimentoService: MovimentosManuaisService) {}
+  constructor(
+    private fb: FormBuilder,
+    private movimentoService: MovimentosManuaisService,
+    private currencyPipe: CurrencyPipe
+  ) {}
 
   ngOnInit(): void {
     this.movimentoService.listarProdutos().subscribe((response) => {
@@ -96,6 +103,40 @@ export class MovimentosManuaisComponent {
     });
   }
 
+  onMesInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '').slice(0, 2);
+    this.form.get('mes')?.setValue(input.value, { emitEvent: false });
+  }
+
+  onAnoInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    input.value = input.value.replace(/\D/g, '').slice(0, 4);
+    this.form.get('ano')?.setValue(input.value, { emitEvent: false });
+  }
+
+  onValorInput(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const raw = input.value.replace(/[^0-9,\.]/g, '').replace(/\./g, '').replace(/,/g, '.');
+    this.form.get('valor')?.setValue(raw, { emitEvent: false });
+  }
+
+  formatCurrencyValue(value: string) {
+    if (!value) return;
+
+    // Remove tudo que não é dígito
+    const numeroLimpo = value.replace(/\D/g, '');
+    
+    // Converte para um valor decimal (ex: divide por 100 para ter os centavos)
+    const valorNumerico = Number(numeroLimpo) / 100;
+
+    // Formata usando o CurrencyPipe
+    const valorFormatado = this.currencyPipe.transform(valorNumerico, 'BRL', 'symbol', '1.2-2');
+
+    // Atualiza o formulário sem disparar o evento novamente (evita loop)
+    this.form.get('valor')?.patchValue(valorFormatado, { emitEvent: false });
+  }
+
   onProdutoClick(): void {
     const produtoSelecionado = this.form.get('produto')?.value || undefined;
     if (produtoSelecionado) {
@@ -113,6 +154,7 @@ export class MovimentosManuaisComponent {
   }
 
   incluir(): void {
+    debugger;
     const value = this.form.value;
     const produto = this.produtos.find((item) => item.codigo === value.produto);
     const descricao = value.descricao?.trim() || 'Movimento novo';
